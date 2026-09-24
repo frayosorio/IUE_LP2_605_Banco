@@ -1,6 +1,8 @@
 package vistas;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -32,7 +34,9 @@ public class BancoVista extends JFrame {
     private JComboBox cmbTipoCuenta, cmbTipoTransaccion, cmbCuenta;
     private JLabel lblValor, lblPlazo, lblTasaInteres;
 
-    JTabbedPane tp;
+    private JTabbedPane tp;
+
+    private JButton btnGuardarCuenta;
 
     public BancoVista() {
         setSize(600, 400);
@@ -90,10 +94,9 @@ public class BancoVista extends JFrame {
         txtTitular.setBounds(110, 40, 100, 25);
         pnlEditarCuenta.add(txtTitular);
 
-
         cmbTipoCuenta = new JComboBox();
         cmbTipoCuenta.setBounds(220, 10, 100, 25);
-        
+
         DefaultComboBoxModel mdlTipoCuenta = new DefaultComboBoxModel(TipoCuenta.values());
         cmbTipoCuenta.setModel(mdlTipoCuenta);
         pnlEditarCuenta.add(cmbTipoCuenta);
@@ -158,13 +161,8 @@ public class BancoVista extends JFrame {
             }
         });
 
-
-        JButton btnGuardarCuenta = new JButton("Guardar");
+        btnGuardarCuenta = new JButton("Guardar");
         btnGuardarCuenta.setBounds(220, 70, 100, 25);
-        btnGuardarCuenta.addActionListener(evt -> {
-            btnGuardarCuentaClick();
-
-        });
         pnlEditarCuenta.add(btnGuardarCuenta);
 
         JButton btnCancelarCuenta = new JButton("Cancelar");
@@ -244,8 +242,8 @@ public class BancoVista extends JFrame {
         tblTransacciones = new JTable();
         JScrollPane spListaTransacciones = new JScrollPane(tblTransacciones);
 
-        //dtm = new DefaultTableModel(null, encabezadosTransacciones);
-        //tblTransacciones.setModel(dtm);
+        // dtm = new DefaultTableModel(null, encabezadosTransacciones);
+        // tblTransacciones.setModel(dtm);
 
         // Agregar componentes
         pnlTransacciones.add(pnlEditarTransaccion);
@@ -263,9 +261,56 @@ public class BancoVista extends JFrame {
         getContentPane().add(tp, BorderLayout.CENTER);
     }
 
-    public void mostrarCuentas(String[][] datos, String[] encabezados){
-        DefaultTableModel dtm=new DefaultTableModel(datos, encabezados);
+    // getters
+    public TipoCuenta getTipoCuentaSeleccionado() {
+        return (TipoCuenta) cmbTipoCuenta.getSelectedItem();
+    }
+
+    public String getTitular() {
+        return txtTitular.getText();
+    }
+
+    public String getNumero() {
+        return txtNumero.getText();
+    }
+
+    public double getTasa() {
+        try {
+            return Double.parseDouble(txtTasaInteres.getText());
+        } catch (Exception ex) {
+            return 0;
+        }
+    }
+
+    public double getValor() {
+        try {
+            return Double.parseDouble(txtValor.getText());
+        } catch (Exception ex) {
+            return 0;
+        }
+    }
+
+    public int getPlazo() {
+        try {
+            return Integer.parseInt(txtPlazo.getText());
+        } catch (Exception ex) {
+            return 0;
+        }
+    }
+
+    // setters
+    public void setGuardarCuentaClick(ActionListener escuchadorEventos) {
+        btnGuardarCuenta.addActionListener(escuchadorEventos);
+    }
+
+    // metodos publicos
+    public void mostrarCuentas(String[][] datos, String[] encabezados) {
+        DefaultTableModel dtm = new DefaultTableModel(datos, encabezados);
         tblCuentas.setModel(dtm);
+    }
+
+    public void ocultarEdicionCuenta() {
+        pnlEditarCuenta.setVisible(false);
     }
 
     private void btnAgregarCuentaClick() {
@@ -278,14 +323,8 @@ public class BancoVista extends JFrame {
 
     }
 
-    private void btnGuardarCuentaClick() {
-        pnlEditarCuenta.setVisible(false);
-
-    }
-
     private void btnCancelarCuentaClick() {
-        pnlEditarCuenta.setVisible(false);
-
+        ocultarEdicionCuenta();
     }
 
     private void btnTransaccionClick() {
